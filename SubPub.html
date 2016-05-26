@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Subscribe/Publish Pattern</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+</head>
+
+<body>
+    <script type="text/javascript">
+    var subpub = {};
+    (function(subpub) {
+        var evensArr = [],
+            sid = -1;
+
+        subpub.subscribe = function(e, fn) {
+            if (!evensArr[e]) {
+                evensArr[e] = [];
+            }
+            var token = (++sid).toString();
+            evensArr[e].push({
+                token: token,
+                function: fn
+            });
+            return token;
+        };
+
+        subpub.unsubscribe = function(token) {
+            for (var e in evensArr) {
+                if (evensArr[e]) {
+                    for (var i = evensArr[e].length - 1; i >= 0; i--) {
+                        if (evensArr[e][i].token === token) {
+                            evensArr[e].splice(i, 1);
+                            return token;
+                        }
+                    }
+                }
+            }
+            return this;
+        };
+
+        subpub.publish = function(e, args) {
+            if (!evensArr[e]) {
+                return false;
+            }
+
+            var subEvents = evensArr[e],
+                len = subEvents ? subEvents.length : 0;
+
+            while (len--) {
+                subEvents[len].function(e, args);
+            }
+            return this;
+        };
+
+    }(subpub));
+
+    var messageLogger = function(e, msg) {
+        console.info('事件：' + e);
+        console.info(msg);
+    };
+
+    var subscribe = subpub.subscribe('/logger/logger_msg', messageLogger);
+
+    subpub.publish('/logger/logger_msg', 'ok');
+    subpub.publish('/logger/logger_msg', [1, 2, 3, 4, 5]);
+    subpub.publish('/logger/logger_msg', {
+        name: 'niki',
+        age: 23
+    });
+
+    subpub.unsubscribe(subscribe);
+
+    subpub.publish('/logger/logger_msg', 'ok');
+    subpub.publish('/logger/logger_msg', [1, 2, 3, 4, 5]);
+    subpub.publish('/logger/logger_msg', {
+        name: 'niki',
+        age: 23
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Observer Pattern</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+</head>
+
+<body>
+    <button id="addBtn">添加</button>
+    <div>
+        <input type="checkbox" id="checkController" />全选
+    </div>
+    <div id="subCheckbox"></div>
+    <script type="text/javascript">
+
+    /**
+     * 目标对象，存放观察者，并且提供方法触发所有观察者某个方法（同一个名称）
+     */
+    function Subject() {
+        this.observers = [];
+    }
+
+    Subject.prototype = {
+        constructor: Subject,
+        add: function(observer) {
+            this.observers.push(observer);
+        },
+        remove: function() {
+
+        },
+        empty: function() {
+            this.observers = [];
+        },
+        notify: function(value) {
+            for (var i = this.observers.length - 1; i >= 0; i--) {
+                this.observers[i].update(value);
+            }
+        }
+    };
+    /**
+     * 观察对象，用于更新自身状态或值
+     */
+    function Observer() {
+        this.update = function(value) {
+        	//这边相当于一个接口，用户必须改写改方法才可以达到观察模式
+        }
+    }
+    /**
+     * 对象的浅克隆
+     * @param  {[object]} srcObj  克隆对象
+     * @param  {[object]} destObj 目标对象
+     */
+    function extend(srcObj, destObj) {
+        for (var prop in srcObj) {
+            if (destObj[prop] === undefined) {
+                destObj[prop] = srcObj[prop];
+            }
+        }
+    }
+
+    function $(id) {
+        return document.getElementById(id);
+    }
+
+    var $addBtn = $('addBtn'),
+        $checkController = $('checkController'),
+        $subCheckbox = $('subCheckbox');
+
+    extend(new Subject(), $checkController);
+    $checkController.addEventListener('click', function(e) {
+    	$checkController.notify(this.checked);
+    }, false);
+
+
+    $addBtn.addEventListener('click', function(e) {
+        createCheckBox();
+    }, false)
+
+    function createCheckBox() {
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        if($checkController.checked){
+        	checkbox.checked = true;
+        }
+        extend(new Observer(), checkbox);
+        checkbox.update = function(value) {
+            this.checked = value;
+        };
+        $checkController.add(checkbox);
+        $subCheckbox.appendChild(checkbox);
+    }
+    </script>
+</body>
+
+</html>

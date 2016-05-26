@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Constructor</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+function Person(name,country){
+	this.name = name;
+	this.country = country;
+}
+Person.prototype.speak = function(){
+	console.info('my name is ' + this.name + ',I\'m form ' + this.country);
+};
+var p1 = new Person('Niki','China');
+var p2 = new Person('Bob','England');
+p1.speak(); // my name is Niki,I'm form China
+p2.speak(); // my name is Bob,I'm form England
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Singleton Pattern</title>
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	</head>
+<body>
+    
+<script type="text/javascript">
+    var SingletonMdul = (function(){
+    	var instance;
+
+    	function Singleton(options){
+    		this.visitedSum = 0;
+    	}
+    	Singleton.prototype = {
+    		constructor : Singleton,
+    		visit : function(){
+    			this.visitedSum++;
+    			console.info(this.visitedSum);
+    		}
+    	};
+
+    	var _static = {
+    		getInstance : function(options){
+    			if(instance === undefined){
+    				instance = new Singleton(options);
+    			}
+    			return instance;
+    		}
+    	};
+    	return _static;
+    }());
+
+    var instanceOne = SingletonMdul.getInstance();
+    instanceOne.visit();
+    instanceOne.visit();
+    instanceOne.visit();
+    var instanceTwo= SingletonMdul.getInstance();
+    instanceTwo.visit();
+    instanceTwo.visit();
+    instanceTwo.visit();
+    instanceTwo.visit();
+    instanceTwo.visit();
+
+</script>
+</body>
+</html>
